@@ -260,14 +260,30 @@ function App() {
     return (
       <div className="mobile-nav-arrows">
         <div className="arrow-row">
-          <button onClick={moveUp} className="arrow-btn up-arrow">▲</button>
+          <button onClick={moveUp} className="arrow-btn up-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+              <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
+          </button>
         </div>
         <div className="arrow-row">
-          <button onClick={moveLeft} className="arrow-btn left-arrow">◀</button>
-          <button onClick={moveRight} className="arrow-btn right-arrow">▶</button>
+          <button onClick={moveLeft} className="arrow-btn left-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+              <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/>
+            </svg>
+          </button>
+          <button onClick={moveRight} className="arrow-btn right-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+            </svg>
+          </button>
         </div>
         <div className="arrow-row">
-          <button onClick={moveDown} className="arrow-btn down-arrow">▼</button>
+          <button onClick={moveDown} className="arrow-btn down-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+              <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+            </svg>
+          </button>
         </div>
       </div>
     );
