@@ -240,6 +240,66 @@ function App() {
     return colors[value] || (value > 1048576 ? '#000000' : '#cdc1b4') // Black for extremely large numbers
   }
 
+  const moveUp = () => {
+    moveGrid('up')
+  }
+
+  const moveDown = () => {
+    moveGrid('down')
+  }
+
+  const moveLeft = () => {
+    moveGrid('left')
+  }
+
+  const moveRight = () => {
+    moveGrid('right')
+  }
+
+  const MobileNavArrows = () => {
+    return (
+      <div className="mobile-nav-arrows">
+        <div className="arrow-row">
+          <button onClick={moveUp} className="arrow-btn up-arrow">▲</button>
+        </div>
+        <div className="arrow-row">
+          <button onClick={moveLeft} className="arrow-btn left-arrow">◀</button>
+          <button onClick={moveRight} className="arrow-btn right-arrow">▶</button>
+        </div>
+        <div className="arrow-row">
+          <button onClick={moveDown} className="arrow-btn down-arrow">▼</button>
+        </div>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!gameOver) {
+        switch (event.key) {
+          case 'ArrowUp':
+            moveUp();
+            break;
+          case 'ArrowDown':
+            moveDown();
+            break;
+          case 'ArrowLeft':
+            moveLeft();
+            break;
+          case 'ArrowRight':
+            moveRight();
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [gameOver, moveUp, moveDown, moveLeft, moveRight]);
+
   return (
     <div className="app">
       <div className="game-container">
@@ -288,11 +348,16 @@ function App() {
             <button onClick={initializeGame}>Try Again</button>
           </div>
         )}
+
+        {/* Add mobile navigation arrows */}
+        <MobileNavArrows />
       </div>
 
       <div className="instructions">
         <p>How to play on PC: Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!</p>
-        <p>How to play on mobile: Tap and drag to move the tiles. When two tiles with the same number touch, they merge into one!</p>
+      </div>
+        
+      <div className="instructions">
         <p>Challenge: Can you reach beyond 2048? Merge tiles to create even larger numbers!</p>
       </div>
     </div>
