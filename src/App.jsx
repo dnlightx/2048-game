@@ -67,8 +67,9 @@ function App() {
         }
 
         if (j < row.length - 1 && row[j] === row[j + 1]) {
-          newRow.push(row[j] * 2)
-          newScore += row[j] * 2
+          const mergedValue = row[j] * 2
+          newRow.push(mergedValue)
+          newScore += mergedValue
           skipNext = true
           newMergedCells.push({ row: i, col: newRow.length - 1 })
         } else {
@@ -153,6 +154,66 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [grid, gameOver])
 
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 })
+  const [touchEnd, setTouchEnd] = useState({ x: 0, y: 0 })
+
+  const handleTouchStart = (e) => {
+    setTouchStart({ 
+      x: e.touches[0].clientX, 
+      y: e.touches[0].clientY 
+    })
+  }
+
+  const handleTouchMove = (e) => {
+    setTouchEnd({ 
+      x: e.touches[0].clientX, 
+      y: e.touches[0].clientY 
+    })
+  }
+
+  const handleTouchEnd = () => {
+    const deltaX = touchEnd.x - touchStart.x
+    const deltaY = touchEnd.y - touchStart.y
+    const absDeltaX = Math.abs(deltaX)
+    const absDeltaY = Math.abs(deltaY)
+
+    if (absDeltaX > 50 || absDeltaY > 50) {
+      if (absDeltaX > absDeltaY) {
+        // Horizontal swipe
+        moveGrid(deltaX > 0 ? 'right' : 'left')
+      } else {
+        // Vertical swipe
+        moveGrid(deltaY > 0 ? 'down' : 'up')
+      }
+    }
+  }
+
+  useEffect(() => {
+    const gridElement = document.querySelector('.grid')
+    if (gridElement) {
+      gridElement.addEventListener('touchstart', handleTouchStart, { passive: false })
+      gridElement.addEventListener('touchmove', handleTouchMove, { passive: false })
+      gridElement.addEventListener('touchend', handleTouchEnd, { passive: false })
+      
+      return () => {
+        gridElement.removeEventListener('touchstart', handleTouchStart)
+        gridElement.removeEventListener('touchmove', handleTouchMove)
+        gridElement.removeEventListener('touchend', handleTouchEnd)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const metaViewport = document.createElement('meta')
+    metaViewport.name = 'viewport'
+    metaViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+    document.head.appendChild(metaViewport)
+
+    return () => {
+      document.head.removeChild(metaViewport)
+    }
+  }, [])
+
   const getCellColor = (value) => {
     const colors = {
       2: '#eee4da',
@@ -165,9 +226,18 @@ function App() {
       256: '#edcc61',
       512: '#edc850',
       1024: '#edc53f',
-      2048: '#edc22e'
+      2048: '#edc22e',
+      4096: '#5d3f97', // Deep purple
+      8192: '#8e44ad', // Rich purple
+      16384: '#2980b9', // Bright blue
+      32768: '#27ae60', // Emerald green
+      65536: '#d35400', // Dark orange
+      131072: '#c0392b', // Deep red
+      262144: '#16a085', // Teal
+      524288: '#2c3e50', // Dark blue-grey
+      1048576: '#f39c12'  // Bright orange
     }
-    return colors[value] || '#cdc1b4'
+    return colors[value] || (value > 1048576 ? '#000000' : '#cdc1b4') // Black for extremely large numbers
   }
 
   return (
@@ -175,7 +245,7 @@ function App() {
       <div className="game-container">
         <div className="title-section">
           <h1>2048</h1>
-          <p className="creator">Created by Promise Omisakin</p>
+          <p className="creator">by Promise Omisakin</p>
         </div>
 
         <div className="score-container">
@@ -221,7 +291,9 @@ function App() {
       </div>
 
       <div className="instructions">
-        <p>How to play: Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!</p>
+        <p>How to play on PC: Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!</p>
+        <p>How to play on mobile: Tap and drag to move the tiles. When two tiles with the same number touch, they merge into one!</p>
+        <p>Challenge: Can you reach beyond 2048? Merge tiles to create even larger numbers!</p>
       </div>
     </div>
   )
